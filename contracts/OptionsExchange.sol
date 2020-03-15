@@ -176,7 +176,7 @@ contract OptionsExchange {
         IERC20 oToken,
         uint256 _amt,
         address payable _transferTo
-    ) public returns (uint256) {
+    ) internal returns (uint256) {
         require(!isETH(oToken), "Can only buy oTokens");
 
         if (!isETH(paymentToken)) {
@@ -223,6 +223,8 @@ contract OptionsExchange {
             );
 
             uint256 ethToTransfer = exchange.getEthToTokenOutputPrice(_amt);
+
+            require(msg.value == ethToTransfer, "Not enough ETH to buy");
 
             emit BuyOTokens(
                 msg.sender,
