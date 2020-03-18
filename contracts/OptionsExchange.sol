@@ -176,7 +176,7 @@ contract OptionsExchange {
         IERC20 oToken,
         uint256 _amt,
         address payable _transferTo
-    ) public returns (uint256) {
+    ) internal returns (uint256) {
         require(!isETH(oToken), "Can only buy oTokens");
 
         if (!isETH(paymentToken)) {
