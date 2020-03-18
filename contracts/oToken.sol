@@ -1,5 +1,6 @@
 pragma solidity 0.5.10;
 
+import "./interfaces/IOptionsExchange.sol";
 import "./OptionsContract.sol";
 
 /**
@@ -18,7 +19,7 @@ contract oToken is OptionsContract {
     * @param _strikeExp The precision of the strike asset (-18 if ETH)
     * @param _strike The asset in which the insurance is calculated
     * @param _expiry The time at which the insurance expires
-    * @param _optionsExchange The contract which interfaces with the exchange + oracle
+    * @param _optionsExchangeAddress The contract address which interfaces with the exchange + oracle
     * @param _oracleAddress The address of the oracle
     * @param _windowSize UNIX time. Exercise window is from `expiry - _windowSize` to `expiry`.
     */
@@ -32,7 +33,7 @@ contract oToken is OptionsContract {
         int32 _strikeExp,
         IERC20 _strike,
         uint256 _expiry,
-        OptionsExchange _optionsExchange,
+        address _optionsExchangeAddress,
         address _oracleAddress,
         uint256 _windowSize
     )
@@ -47,7 +48,7 @@ contract oToken is OptionsContract {
             _strikeExp,
             _strike,
             _expiry,
-            _optionsExchange,
+            _optionsExchangeAddress,
             _oracleAddress,
             _windowSize
         )
@@ -98,8 +99,8 @@ contract oToken is OptionsContract {
     ) external payable {
         openVault();
         addETHCollateralOption(amtToCreate, address(this));
-        this.approve(address(optionsExchange), amtToCreate);
-        optionsExchange.sellOTokens(
+        this.approve(optionsExchangeAddress, amtToCreate);
+        IOptionsExchange(optionsExchangeAddress).sellOTokens(
             receiver,
             address(this),
             address(0),
@@ -118,8 +119,8 @@ contract oToken is OptionsContract {
     ) public payable {
         addETHCollateral(msg.sender);
         issueOTokens(amtToCreate, address(this));
-        this.approve(address(optionsExchange), amtToCreate);
-        optionsExchange.sellOTokens(
+        this.approve(optionsExchangeAddress, amtToCreate);
+        IOptionsExchange(optionsExchangeAddress).sellOTokens(
             receiver,
             address(this),
             address(0),
@@ -178,8 +179,8 @@ contract oToken is OptionsContract {
     ) external {
         openVault();
         addERC20CollateralOption(amtToCreate, amtCollateral, address(this));
-        this.approve(address(optionsExchange), amtToCreate);
-        optionsExchange.sellOTokens(
+        this.approve(optionsExchangeAddress, amtToCreate);
+        IOptionsExchange(optionsExchangeAddress).sellOTokens(
             receiver,
             address(this),
             address(0),
@@ -200,8 +201,8 @@ contract oToken is OptionsContract {
     ) public {
         addERC20Collateral(msg.sender, amtCollateral);
         issueOTokens(amtToCreate, address(this));
-        this.approve(address(optionsExchange), amtToCreate);
-        optionsExchange.sellOTokens(
+        this.approve(optionsExchangeAddress, amtToCreate);
+        IOptionsExchange(optionsExchangeAddress).sellOTokens(
             receiver,
             address(this),
             address(0),
