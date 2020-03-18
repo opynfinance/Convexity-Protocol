@@ -224,7 +224,7 @@ contract OptionsExchange {
 
             uint256 ethToTransfer = exchange.getEthToTokenOutputPrice(_amt);
 
-            require(msg.value == ethToTransfer, "Not enough ETH to buy");
+            require(msg.value == ethToTransfer, "Not enough ETH to buy oToken");
 
             emit BuyOTokens(
                 msg.sender,
